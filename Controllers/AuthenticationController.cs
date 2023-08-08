@@ -54,7 +54,7 @@ namespace dockerForum.Controllers
                     FullName = request.FullName,
                     Email = request.Email,
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
-                    UserName = request.Email
+                    UserName = request.Username
                 };
                 var createUserResult = await _userManager.CreateAsync(userExists, request.Password);
                 if (!createUserResult.Succeeded) return new RegisterResponse { Message = $"Create user failed {createUserResult?.Errors?.First()?.Description}", Success = false };
