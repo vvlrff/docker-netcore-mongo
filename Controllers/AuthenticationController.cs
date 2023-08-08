@@ -121,7 +121,7 @@ namespace dockerForum.Controllers
                 {
                     AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                     Message = "Login Successful",
-                    Email = user?.Email,
+                    Email = user.Email,
                     Success = true,
                     UserId = user?.Id.ToString()
                 };
