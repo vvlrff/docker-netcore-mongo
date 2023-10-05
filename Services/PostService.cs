@@ -35,7 +35,7 @@ namespace dockerForum.Services
 
         public void Update(string id, Post post)
         {
-            throw new NotImplementedException();
+            _posts.UpdateOne(post => post.Id == id, Builders<Post>.Update.Set("Text", post.Text));
         }
     }
 }

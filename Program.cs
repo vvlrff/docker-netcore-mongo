@@ -12,8 +12,21 @@ using MongoDB.Driver;
 using System.Text;
 using System.Text.Json;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+   options.AddPolicy(name: MyAllowSpecificOrigins,
+                     policy =>
+                     {
+                         policy.WithOrigins("http://localhost:3000")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                     });
+});
 
 // Add services to the container.
 BsonSerializer.RegisterSerializer(new GuidSerializer(MongoDB.Bson.BsonType.String));
@@ -37,7 +50,7 @@ var mongoDbIdentityConfig = new MongoDbIdentityConfiguration
 {
     MongoDbSettings = new MongoDbSettings
     {
-        ConnectionString = "mongodb+srv://vvlrff:DQepauoXbrLWihMN@cluster0.1zsa4e0.mongodb.net/?retryWrites=true&w=majority",
+        ConnectionString = builder.Configuration.GetValue<string>("PostStoreDatabaseSettings:ConnectionString"),
         DatabaseName = "test",
     },
     IdentityOptionsAction = options =>
@@ -107,6 +120,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -114,5 +129,7 @@ app.UseAuthorization();
 app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
