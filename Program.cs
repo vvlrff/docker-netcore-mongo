@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 BsonSerializer.RegisterSerializer(new GuidSerializer(MongoDB.Bson.BsonType.String));
@@ -81,7 +82,14 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000");
+                      });
+});
 
 builder.Services.AddControllers();
 
@@ -103,6 +111,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
 
